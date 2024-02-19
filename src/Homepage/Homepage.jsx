@@ -2,43 +2,31 @@ import React from "react";
 import { Link } from "react-router-dom";
 import { useState } from "react";
 import { useEffect } from "react";
-import mac from "D:/projects/ecommerce/frontend/vite-project/src/assets/mac.webp"
+import mac from "D:/projects/git repo/testhub/src/assets/mac.webp"
 //import iphone from "D:/projects/ecommerce/frontend/vite-project/src/assets/iphone.jpg"
 const Homepage=()=>{
 
-  const [array,setArray]=useState({
-    Product:[],
-    images:[],
-  });
-  // function store(a,b,c){
-  //   for(let i=0;i<b;i++){
-  //     a.push(c);
-  //     console.log(a);
-  //   }
-  // }
-useEffect(
+  const [array,setArray]=useState([]);
+ useEffect(
 ()=>{
   fetchdata();
-},[array]
+},[]
 );
-  const fetchdata=async()=>{
-    try{
-      const response=await fetch('http://localhost:3000/productnames')
-  const data= await response.json();
- console.log(data[0]);
- const data1=data[0]
-  console.log(data1.Product,data1.images);
- setArray(
- array.Product.push(data1.Product[0])
-  //store(array.Product,data1.Product.length,data1.Product
- );
- console.log(array)
-    }
-    catch(error){
-      console.log(error)
-    }
+const fetchdata = async () => {
+  try {
+    const response = await fetch('http://localhost:3000/productnames');
+    const data = await response.json();
+    const {Productname,images} = data[0];
+    const products=Productname.map((productname, index) => ({
+      productname,
+      image: images[index]
+    }));
+    setArray(products);
+    console.log(array);
+  } catch (error) {
+    console.log(error);
   }
-  
+};
   return(
     <>
     <header class="text-gray-600 body-font">
@@ -80,11 +68,19 @@ useEffect(
 </section>
 <section class="text-gray-600 body-font">
   <div class="container px-5 py-24 mx-auto">
-    <div class="flex flex-wrap -m-4">
-{array.Product.map((productname,index)=>{
-  <><h1>{productname}</h1><h2>{productname.images[index]}</h2></>
-})}     
-      {/* <div class="lg:w-1/4 md:w-1/2 p-4 w-full">
+  <div className="flex flex-wrap -m-4">
+  {array.map((product, index) => (
+    <div className="lg:w-1/4 md:w-1/2 p-4 w-full" key={index}>
+      <a className="block relative h-48 rounded overflow-hidden">
+        <img alt="ecommerce" className="object-cover object-center w-full h-full block" src={product.image} />
+      </a>
+      <h2 className="text-gray-900 title-font text-lg font-medium">{product.productname}</h2>
+      <p className="mt-1">$21.15</p>
+      <h1>{product.image}</h1>
+
+    </div>
+  ))}
+</div>              {/* <div class="lg:w-1/4 md:w-1/2 p-4 w-full">
         <a class="block relative h-48 rounded overflow-hidden">
           <img alt="ecommerce" class="object-cover object-center w-full h-full block" src="https://unsplash.com/photos/a-close-up-of-a-microphone-1IE_EhrJM_E" />
         </a>
@@ -114,7 +110,6 @@ useEffect(
           <p class="mt-1">$18.40</p>
         </div>
       </div> */}
-  </div>
   </div> 
 </section>
     </>
