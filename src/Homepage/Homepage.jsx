@@ -1,17 +1,55 @@
 import React from "react";
-import { Link } from "react-router-dom";
+import { Await, Link } from "react-router-dom";
 import { useState } from "react";
 import { useEffect } from "react";
+import { useLocation } from "react-router-dom";
 import mac from "D:/projects/git repo/testhub/src/assets/mac.webp"
+import BuyingComponent from "../BuyingPage/BuyingComponent";
 //import iphone from "D:/projects/ecommerce/frontend/vite-project/src/assets/iphone.jpg"
 const Homepage=()=>{
-
-  const [array,setArray]=useState([]);
+const location =useLocation();
+const user =location.state?.user;
+console.log(user);
+const [array,setArray]=useState([]);
+//const [User,setUser]=useState();
  useEffect(
 ()=>{
   fetchdata();
 },[]
 );
+// useEffect(() => {
+//   if (user) {
+//     localStorage.setItem('user', user);
+//   } else {
+//     const storedUser = localStorage.getItem('user');
+//     if (storedUser) {
+//       setUser(storedUser);
+//     }
+//   }
+// }, [user]);
+
+function setcart(index){
+  
+  try{
+const senddata={
+  "Name":user,
+  "index":index
+}
+console.log(senddata);
+    const response=fetch('http://localhost:3000/addtocart',{method:"POST",
+headers:{
+  'Content-Type':'application/json'
+},
+body:JSON.stringify(senddata)
+  });
+  if(response.ok){
+    console.log("success");
+  }
+  }
+  catch(error){
+    console.log(error);
+  }
+};
 const fetchdata = async () => {
   try {
     const response = await fetch('http://localhost:3000/productnames');
@@ -21,6 +59,7 @@ const fetchdata = async () => {
       productname,
       image: images[index]
     }));
+    console.log(products);
     setArray(products);
     console.log(array);
   } catch (error) {
@@ -29,6 +68,7 @@ const fetchdata = async () => {
 };
   return(
     <>
+  {/* <BuyingComponent /> */}
     <header class="text-gray-600 body-font">
   <div class="container mx-auto flex flex-wrap p-5 flex-col md:flex-row items-center">
     <a class="flex title-font font-medium items-center text-gray-900 mb-4 md:mb-0">
@@ -42,10 +82,16 @@ const fetchdata = async () => {
       <a class="mr-5 hover:text-gray-900">All products</a>
       <a class="mr-5 hover:text-gray-900">Categories</a>
       <a class="mr-5 hover:text-gray-900">Account</a>
-      <a class="mr-5 hover:text-gray-900">Cart</a>
-      <button class="inline-flex text-white bg-indigo-500 border-0 py-1 px-4 focus:outline-none hover:bg-indigo-600 rounded text-lg">
-        <Link to="/login">Login</Link></button>
+      <a class="mr-5 hover:text-gray-900"><Link to={{pathname: `/Cart`, state: {user1: user}}}>Cart</Link></a>
+      {user == null ? (
+  <button className="inline-flex text-white bg-indigo-500 border-0 py-1 px-4 focus:outline-none hover:bg-indigo-600 rounded text-lg">
+    <Link to="/login">Login</Link>
+  </button>
+) : (
+  <a class="mr-5 hover:text-gray-900">{user}
+</a>
 
+  )}
     </nav>
    
    </div>
@@ -76,7 +122,7 @@ const fetchdata = async () => {
       </a>
       <h2 className="text-gray-900 title-font text-lg font-medium">{product.productname}</h2>
       <p className="mt-1">$21.15</p>
-      <h1>{product.image}</h1>
+      <button class="mt-2 inline-flex text-gray-700 bg-gray-100 border-0 py-2 px-6 focus:outline-none hover:bg-gray-200 rounded text-lg"onClick={()=>{setcart(index)}}>Add to cart</button>
 
     </div>
   ))}

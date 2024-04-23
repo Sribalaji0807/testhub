@@ -1,21 +1,34 @@
 import React from "react";
 import { useState } from "react";
-const BuyingComponent=()=>{
+import { useEffect } from "react";
+import { useLocation } from "react-router-dom";
+const BuyingComponent=(event)=>{
  const [cart,useCart]=useState('Cart');
+ const location = useLocation();
+ const [queryParams, setQueryParams] = useState({});
+ useEffect(() => {
+  const QueryParams = new URLSearchParams(location.search);
+  const productname = QueryParams.get("productname");
+  const productimage = QueryParams.get("productimage");
 
- const addtocart=()=>{
-  
- }
+  // Update state
+  setQueryParams({ productname, productimage });
 
+  // Store in localStorage
+  localStorage.setItem("productname", productname);
+  localStorage.setItem("productimage", productimage);
+
+  console.log(queryParams);
+}, []);
 return(
 <>
 <section class="text-gray-600 body-font overflow-hidden">
   <div class="container px-5 py-24 mx-auto">
     <div class="lg:w-4/5 mx-auto flex flex-wrap">
-      <img alt="ecommerce" class="lg:w-1/2 w-full lg:h-auto h-64 object-cover object-center rounded" src="https://dummyimage.com/400x400" />
+      <img alt="ecommerce" class="lg:w-1/2 w-full lg:h-auto h-64 object-cover object-center rounded" src="" />
       <div class="lg:w-1/2 w-full lg:pl-10 lg:py-6 mt-6 lg:mt-0">
         <h2 class="text-sm title-font text-gray-500 tracking-widest">Mobile</h2>
-        <h1 class="text-gray-900 text-3xl title-font font-medium mb-1">Iphone 14 pro</h1>
+        <h1 class="text-gray-900 text-3xl title-font font-medium mb-1">hi</h1>
         <div class="flex mb-4">
           <span class="flex items-center">
             <svg fill="currentColor" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" class="w-4 h-4 text-indigo-500" viewBox="0 0 24 24">
