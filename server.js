@@ -1,42 +1,21 @@
 const express=require('express');
 const cors =require('cors');
 const { ObjectId } = require('mongoose').Types;
-
+const Product=require('./product')
 const mongoose=require('mongoose');
-//const mongodb=require('mongodb')
 const app=express();
 const url = 'mongodb://localhost:27017/productdetails';
-// const client = new mongodb.MongoClient(url);
 
-// client.connect((err) => {
-//     if (err) {
-//         console.log(err);
-//     } else {
-//         console.log("Connected successfully to server");
-
-//         const db = client.db('productdetails');
-//         const collection = db.collection('product');
-//         console.log("Collection 'product' is ready.");
-//     }
-// });
-// const customer=new mongoose.Schema({
-//     email:String,
-// })
-// const id=mongoose.model('id',customer,'customer')
 mongoose.connect(url,{
     useNewUrlParser:true,
     useUnifiedTopology:true
 })
 .then(()=>{console.log("success")});
-const products =new mongoose.Schema({
-    Productname:[String],
-    images:[String]
-})
-const Product=mongoose.model('Product',products,'product');
 const customer =new mongoose.Schema({
     Emailid:String,
     Name:String,
     Cart:Array,
+    Orders:Array
 });
 const Customer=mongoose.model('Customer',customer,'Customer');
 async function print(a){
@@ -91,6 +70,8 @@ console.log(process.env.api_key);
 
 app.use(cors());
 app.use(express.json());
+
+
 app.post('/login',async function(req,res){
 let data=req.body;
 data["returnSecureToken"]=true;
@@ -129,16 +110,29 @@ app.get('/productnames', async function(req,res){
           //console.log(productlist.find())
 //res.json(productlist.find())
 })
+app.post('/deletetheuserproduct',async(req,res)=>{
+    let data=req.body;
+    console.log(data.id);
+
+   const update=await Customer.findOneAndUpdate({
+        Name:data.Name,
+    },{
+        $pull:{Cart:data.id}
+    },
+    {new:true})
+    res.status(200).send("success");
+
+})
 
 app.post('/addtocart' ,async function(req,res){
     let data=req.body;
-    console.log(data.index);
+    console.log(data.id);
   //  const productId = new ObjectId(data.index);
 
    const update=await Customer.findOneAndUpdate({
         Name:data.Name,
     },{
-        $push:{Cart:data.index}
+        $push:{Cart:data.id}
     },
     {new:true})
     res.status(200);
@@ -148,33 +142,67 @@ app.post('/getthecart',async function(req,res){
 let user=req.body;
 console.log("------");
   console.log(user['name']);
-let temp={
-    Productname:[],
-    images:[]
-  };
+
   const get = await Customer.findOne({ Name: user['name'] });
   let cartdetails = get.Cart;
-
+console.log(cartdetails);
   if (!cartdetails || cartdetails.length === 0) {
     console.log('Cart is empty');
     return;
   }
 
-  const products = await Product.find({});
+  const products = await Product.find({"_id":{$in:cartdetails}});
+  console.log(products)
 
-  if (!products) {
-    console.log('No products found');
-    return;
-  }
+  // if (!products) {
+  //   console.log('No products found');
+  //   return;
+  // }
 
-  console.log(products[0].Productname[cartdetails]);
-  for(var i=0;i<cartdetails.length;i++){
-    temp.Productname.push(products[0].Productname[cartdetails[i]]);
-    temp.images.push(products[0].images[cartdetails[i]]);
+  // console.log(products[0].Productname[cartdetails]);
+  // for(var i=0;i<cartdetails.length;i++){
+  //   temp.Productname.push(products[0].Productname[cartdetails[i]]);
+  //   temp.images.push(products[0].images[cartdetails[i]]);
 
-  }
-  console.log(temp);
-  res.status(200).send(temp);
+  // }
+  // console.log(temp);
+  res.status(200).send(products);
+})
+
+app.get('/getbuyproduct/:id',async(req,res)=>{
+    let id=req.params.id;
+    console.log(id);
+    const result=await Product.find({
+        _id:id
+    })
+    console.log(result);
+    res.json(result);
+})
+app.post('/order',async(req,res)=>{
+    let data=req.body;
+    console.log(data.id);
+  //  const productId = new ObjectId(data.index);
+
+   const update=await Customer.findOneAndUpdate({
+        Name:data.Name,
+    },{
+        $push:{Orders:data.id}
+    },
+    {new:true})
+    res.status(200);
+})
+app.post('/getmyorder',async(req,res)=>{
+    let data=req.body;
+   const user=await Customer.find({
+        Name:data.Name,
+    })
+    console.log(user);
+
+    const update=user[0].Orders;
+
+    const products = await Product.find({"_id":{$in:update}});
+
+    res.json(products);
 })
 
 app.listen(3000)
