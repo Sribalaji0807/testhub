@@ -5,6 +5,7 @@ import {BrowserRouter as Router,Routes,Route} from 'react-router-dom'
 import BuyingComponent from './BuyingPage/BuyingComponent'
 import Loginpage from './Loginpage/Loginpage'
 import Cart from './cart/Cart'
+import Orders from './Orders/Orders'
 function App() {
 
   return (
@@ -16,8 +17,8 @@ function App() {
         
       <Route path='/login' element={<Loginpage/>}/>
       <Route path='/Cart' element={<Cart/>}/>
-      <Route path='/Buy/:productname/:productimage' element={<BuyingComponent/>}/>
-
+      <Route path='/Buy/:id' element={<BuyingComponent/>}/>
+<Route path='/myorders' element={<Orders/>} />
       </Routes>
     </Router>
   )

@@ -1,34 +1,54 @@
 import React from "react";
 import { useState } from "react";
 import { useEffect } from "react";
-import { useLocation } from "react-router-dom";
-const BuyingComponent=(event)=>{
- const [cart,useCart]=useState('Cart');
- const location = useLocation();
- const [queryParams, setQueryParams] = useState({});
- useEffect(() => {
-  const QueryParams = new URLSearchParams(location.search);
-  const productname = QueryParams.get("productname");
-  const productimage = QueryParams.get("productimage");
+import { useParams } from 'react-router-dom';
 
-  // Update state
-  setQueryParams({ productname, productimage });
+const BuyingComponent=()=>{
+ const [cart,setCart]=useState([]);
+ const { id } = useParams();
+ useEffect(()=>{
+  const fetchdata=async(id)=>{
+    const response=await fetch(`http://localhost:3000/getbuyproduct/${id}`);
+    const data=await response.json();
+    console.log(data);
+   setCart([data[0]]);
+    console.log(cart);
+  }
+  
+  fetchdata(id)
+ },[])
+useEffect(()=>{
+  console.log(cart[0]);
+},[cart])
 
-  // Store in localStorage
-  localStorage.setItem("productname", productname);
-  localStorage.setItem("productimage", productimage);
+const submit=async(id)=>{
+const response=await fetch('http://localhost:3000/order',{
+  method:'POST',
+  headers:{
+    'Content-Type':'application/json'
+  },
+  body:JSON.stringify({
+    Name:localStorage.getItem('user'),
+    id:id,
+  })
 
-  console.log(queryParams);
-}, []);
+})
+if(response.ok){
+  alert('Order Placed')
+}
+}
+
 return(
 <>
 <section class="text-gray-600 body-font overflow-hidden">
   <div class="container px-5 py-24 mx-auto">
-    <div class="lg:w-4/5 mx-auto flex flex-wrap">
-      <img alt="ecommerce" class="lg:w-1/2 w-full lg:h-auto h-64 object-cover object-center rounded" src="" />
+      {cart.map((product,index)=>(
+        <>
+            <div key={index} class="lg:w-4/5 mx-auto flex flex-wrap">
+
+        <img alt="ecommerce" class="lg:w-1/2  w-64 lg:h-[600px] h-64 object-cover object-center rounded" src={`../../public/${product.images}`} />
       <div class="lg:w-1/2 w-full lg:pl-10 lg:py-6 mt-6 lg:mt-0">
-        <h2 class="text-sm title-font text-gray-500 tracking-widest">Mobile</h2>
-        <h1 class="text-gray-900 text-3xl title-font font-medium mb-1">hi</h1>
+        <h1 class="text-gray-900 text-3xl title-font font-medium mb-1">{product.ProductName}</h1>
         <div class="flex mb-4">
           <span class="flex items-center">
             <svg fill="currentColor" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" class="w-4 h-4 text-indigo-500" viewBox="0 0 24 24">
@@ -77,8 +97,8 @@ return(
           </div>
         <div class="flex">
           <span class="title-font font-medium text-2xl text-gray-900">$58.00</span>
-          <button class="flex ml-auto text-white bg-indigo-500 border-0 py-2 px-6 focus:outline-none hover:bg-indigo-600 rounded">Buy</button>
-          <button class="flex ml-6 text-white bg-indigo-500 border-0 py-2 px-6 focus:outline-none hover:bg-indigo-600 rounded" onClick={()=>{addtocart}}>{cart}</button>
+          <button class="flex ml-auto text-white bg-indigo-500 border-0 py-2 px-6 focus:outline-none hover:bg-indigo-600 rounded" onClick={()=>{submit(product._id)}}>Buy</button>
+          <button class="flex ml-6 text-white bg-indigo-500 border-0 py-2 px-6 focus:outline-none hover:bg-indigo-600 rounded" >click</button>
 
           <button class="rounded-full w-10 h-10 bg-gray-200 p-0 border-0 inline-flex items-center justify-center text-gray-500 ml-4">
             <svg fill="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" class="w-5 h-5" viewBox="0 0 24 24">
@@ -87,7 +107,9 @@ return(
           </button>
         </div>
       </div>
-    </div>
+    </div>                                
+        </>
+      ))}
   </div>
 </section></>
 

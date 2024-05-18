@@ -5,6 +5,7 @@ import { useEffect } from "react";
 import { useLocation } from "react-router-dom";
 import mac from "D:/projects/git repo/testhub/src/assets/mac.webp"
 import BuyingComponent from "../BuyingPage/BuyingComponent";
+import { Navbar } from "../navbar/Navbar";
 //import iphone from "D:/projects/ecommerce/frontend/vite-project/src/assets/iphone.jpg"
 const Homepage=()=>{
 const location =useLocation();
@@ -33,7 +34,7 @@ function setcart(index){
   try{
 const senddata={
   "Name":user,
-  "index":index
+  "id":index
 }
 console.log(senddata);
     const response=fetch('http://localhost:3000/addtocart',{method:"POST",
@@ -54,14 +55,9 @@ const fetchdata = async () => {
   try {
     const response = await fetch('http://localhost:3000/productnames');
     const data = await response.json();
-    const {Productname,images} = data[0];
-    const products=Productname.map((productname, index) => ({
-      productname,
-      image: images[index]
-    }));
-    console.log(products);
-    setArray(products);
-    console.log(array);
+console.log(data);
+setArray(data);
+
   } catch (error) {
     console.log(error);
   }
@@ -69,33 +65,7 @@ const fetchdata = async () => {
   return(
     <>
   {/* <BuyingComponent /> */}
-    <header class="text-gray-600 body-font">
-  <div class="container mx-auto flex flex-wrap p-5 flex-col md:flex-row items-center">
-    <a class="flex title-font font-medium items-center text-gray-900 mb-4 md:mb-0">
-      <svg xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" class="w-10 h-10 text-white p-2 bg-indigo-500 rounded-full" viewBox="0 0 24 24">
-        <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"></path>
-      </svg>
-      <span class="ml-3 text-xl">Ecommerce</span>
-    </a>
-    <nav class="md:ml-auto flex flex-wrap items-center text-base justify-center">
-      <a class="mr-5 hover:text-gray-900">Home</a>
-      <a class="mr-5 hover:text-gray-900">All products</a>
-      <a class="mr-5 hover:text-gray-900">Categories</a>
-      <a class="mr-5 hover:text-gray-900">Account</a>
-      <a class="mr-5 hover:text-gray-900"><Link to={{pathname: `/Cart`, state: {user1: user}}}>Cart</Link></a>
-      {user == null ? (
-  <button className="inline-flex text-white bg-indigo-500 border-0 py-1 px-4 focus:outline-none hover:bg-indigo-600 rounded text-lg">
-    <Link to="/login">Login</Link>
-  </button>
-) : (
-  <a class="mr-5 hover:text-gray-900">{user}
-</a>
-
-  )}
-    </nav>
-   
-   </div>
-</header>
+    <Navbar/>
 <section class="text-gray-600 body-font">
   <div class="container mx-auto flex px-5 py-24 md:flex-row flex-col items-center">
     <div class="lg:flex-grow md:w-1/2 lg:pr-24 md:pr-16 flex flex-col md:items-start md:text-left mb-16 md:mb-0 items-center text-center">
@@ -118,11 +88,12 @@ const fetchdata = async () => {
   {array.map((product, index) => (
     <div className="lg:w-1/4 md:w-1/2 p-4 w-full" key={index}>
       <a className="block relative h-48 rounded overflow-hidden">
-        <img alt="ecommerce" className="object-cover object-center w-full h-full block" src={product.image} />
+        <img alt="ecommerce" className="object-cover object-center w-full h-full block" src={product.images} />
       </a>
-      <h2 className="text-gray-900 title-font text-lg font-medium">{product.productname}</h2>
+      <h2 className="text-gray-900 title-font text-lg font-medium">{product.ProductName}</h2>
       <p className="mt-1">$21.15</p>
-      <button class="mt-2 inline-flex text-gray-700 bg-gray-100 border-0 py-2 px-6 focus:outline-none hover:bg-gray-200 rounded text-lg"onClick={()=>{setcart(index)}}>Add to cart</button>
+      <button class="mt-2 inline-flex text-gray-700 bg-gray-100 border-0 py-2 px-6 focus:outline-none hover:bg-gray-200 rounded text-lg"onClick={()=>{setcart(product._id)}}>Add to cart</button>
+      <button class="mt-2 ml-8 inline-flex text-gray-700 bg-gray-100 border-0 py-2 px-6 focus:outline-none hover:bg-gray-200 rounded text-lg"><Link to={`/Buy/${product._id}`}>Buy</Link></button>
 
     </div>
   ))}
