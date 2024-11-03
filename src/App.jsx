@@ -6,11 +6,13 @@ import BuyingComponent from './BuyingPage/BuyingComponent'
 import Loginpage from './Loginpage/Loginpage'
 import Cart from './cart/Cart'
 import Orders from './Orders/Orders'
+import { Navbar } from './navbar/Navbar'
 function App() {
 
   return (
     
     <Router>
+      <Navbar/>
       <Routes>
         <Route path='/' element={<Homepage/>}/>
 

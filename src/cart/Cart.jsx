@@ -1,10 +1,13 @@
-import React, { useState } from "react";
-import { Link, useLocation } from "react-router-dom";
+import React, { useState,useContext } from "react";
+import { Link, useLocation, useParams } from "react-router-dom";
 import { useEffect } from "react";
 import { Navbar } from "../navbar/Navbar";
+import AuthUser from "../shared/Authuser";
 
 const Cart=()=>{
-const username=localStorage.getItem('user');
+const {userData}=useContext(AuthUser);
+  // const location = useLocation();
+  // const { user } = location.state || {}; // Retrieve 'user' from location.state
 const [array,setArray]=useState([]);
 
    useEffect(
@@ -12,14 +15,14 @@ const [array,setArray]=useState([]);
 fetchdata();
     },[]);
     const fetchdata=async()=>{
-        console.log(username);
+        console.log({userData});
 const response =await fetch('http://localhost:3000/getthecart',{
   method:"POST",
   headers:{
     'Content-Type':'application/json'
   },
   body:JSON.stringify({
-    "name":username
+    "name":userData
   })
 });
 const data=await response.json();
@@ -42,7 +45,7 @@ const response=await fetch("http://localhost:3000/deletetheuserproduct",{
     'Content-Type':'application/json'
   },
   body:JSON.stringify({
-    Name:username,
+    Name:userData,
     id:id
   })
 })
@@ -52,10 +55,9 @@ fetchdata();
     
     return(
         <>
-        <Navbar/>
         <section class="text-gray-600 body-font">
-  <div class="container px-5 py-24 mx-auto">
-  <div className="flex flex-wrap -m-4">
+  <div class="ml-14 container px-5 py-24 mx-auto">
+  <div className="flex flex-wrap m-4">
 
          {array.map((product, index) => (
     <div className="lg:w-1/4 md:w-1/2 p-4 w-full" key={index}>

@@ -1,12 +1,13 @@
 import React from "react";
-import { useState } from "react";
+import { useState,useContext } from "react";
 import { useNavigate } from "react-router-dom"
+import AuthUser from "../shared/Authuser";
 
 const Loginpage = () => {
   const navigate = useNavigate();
   const [emailid, setEmailid] = useState('');
   const [passwd, setPasswd] = useState('');
-
+const {updateUserData}=useContext(AuthUser)
   const login = async function () {
     const senddata = {
       email: emailid,
@@ -20,13 +21,14 @@ const Loginpage = () => {
       },
       body: JSON.stringify(senddata)
     })
-    console.log(response.status);
+  if(response.ok){
     const data = await response.json();
     const name = data.name;
-    console.log(name);
-    localStorage.setItem("user", name);
-    navigate('/', { state: { user: name } });
-
+    updateUserData(name);
+  // console.log(name);
+  //   localStorage.setItem("user", name);
+   navigate('/');
+  }
   }
 
   return (

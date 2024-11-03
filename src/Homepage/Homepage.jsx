@@ -9,31 +9,28 @@ import { Navbar } from "../navbar/Navbar";
 //import iphone from "D:/projects/ecommerce/frontend/vite-project/src/assets/iphone.jpg"
 const Homepage=()=>{
 const location =useLocation();
-const user =location.state?.user;
-console.log(user);
+
 const [array,setArray]=useState([]);
-//const [User,setUser]=useState();
+const [User,setUser]=useState();
  useEffect(
 ()=>{
   fetchdata();
 },[]
 );
-// useEffect(() => {
-//   if (user) {
-//     localStorage.setItem('user', user);
-//   } else {
-//     const storedUser = localStorage.getItem('user');
-//     if (storedUser) {
-//       setUser(storedUser);
-//     }
-//   }
-// }, [user]);
+useEffect(() => {
+ 
+    const storedUser = localStorage.getItem('user');
+    if (storedUser) {
+      setUser(storedUser);
+    }
+  
+}, []);
 
 function setcart(index){
   
   try{
 const senddata={
-  "Name":user,
+  "Name":User,
   "id":index
 }
 console.log(senddata);
@@ -65,7 +62,6 @@ setArray(data);
   return(
     <>
   {/* <BuyingComponent /> */}
-    <Navbar/>
 <section class="text-gray-600 body-font">
   <div class="container mx-auto flex px-5 py-24 md:flex-row flex-col items-center">
     <div class="lg:flex-grow md:w-1/2 lg:pr-24 md:pr-16 flex flex-col md:items-start md:text-left mb-16 md:mb-0 items-center text-center">
