@@ -1,16 +1,19 @@
-import React from "react";
+import React, { useCallback } from "react";
 import { Await, Link } from "react-router-dom";
 import { useState } from "react";
 import { useEffect } from "react";
 import { useLocation } from "react-router-dom";
 import mac from "D:/projects/git repo/testhub/src/assets/mac.webp"
 import BuyingComponent from "../BuyingPage/BuyingComponent";
-import { Navbar } from "../navbar/Navbar";
+import ProductCard from "../AllProducts/ProductCard";
+
 //import iphone from "D:/projects/ecommerce/frontend/vite-project/src/assets/iphone.jpg"
 const Homepage=()=>{
 const location =useLocation();
 
 const [array,setArray]=useState([]);
+const [mainCategory,setMainCategory]=useState(null);
+const [subcategory,setSubCategory]=useState([]);
 const [User,setUser]=useState();
  useEffect(
 ()=>{
@@ -26,7 +29,7 @@ useEffect(() => {
   
 }, []);
 
-function setcart(index){
+const setcart=useCallback(async(index)=>{
   
   try{
 const senddata={
@@ -34,7 +37,8 @@ const senddata={
   "id":index
 }
 console.log(senddata);
-    const response=fetch('http://localhost:3000/addtocart',{method:"POST",
+    const response=await fetch('/server/api/cart/addtocart',{method:"POST",
+      credentials:"include",
 headers:{
   'Content-Type':'application/json'
 },
@@ -47,16 +51,19 @@ body:JSON.stringify(senddata)
   catch(error){
     console.log(error);
   }
-};
+},[]);
 const fetchdata = async () => {
   try {
-    const response = await fetch('http://localhost:3000/productnames');
-    const data = await response.json();
-console.log(data);
-setArray(data);
+    const response = await fetch('/server/api/products/productnames');
+    const data =await response.json()
+
+console.log(Object.keys(data.mainCategory))
+setArray(data.products);
+setMainCategory(data.mainCategory);
+setSubCategory(data.subCategory);
 
   } catch (error) {
-    console.log(error);
+    console.log(error.message);
   }
 };
   return(
@@ -93,7 +100,20 @@ setArray(data);
 
     </div>
   ))}
-</div>              {/* <div class="lg:w-1/4 md:w-1/2 p-4 w-full">
+</div>     
+{mainCategory != null &&
+  Object.keys(mainCategory).map((category, index) => (
+    <div key={index} className="p-4">
+      <h2 className="text-black-900 title-font text-lg font-medium mb-2">{category}</h2>
+      <div className="flex flex-wrap -m-4">
+      {mainCategory[category].map((subcategory, subindex) => (
+        <ProductCard subcategory={subcategory} subindex={subindex} setcart={setcart} />
+      ))}
+      </div>
+    </div>
+  ))}
+
+         {/* <div class="lg:w-1/4 md:w-1/2 p-4 w-full">
         <a class="block relative h-48 rounded overflow-hidden">
           <img alt="ecommerce" class="object-cover object-center w-full h-full block" src="https://unsplash.com/photos/a-close-up-of-a-microphone-1IE_EhrJM_E" />
         </a>

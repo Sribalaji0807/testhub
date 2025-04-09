@@ -1,0 +1,17 @@
+// const walletconfig=metamaskWallet();
+  // const connect=useConnect();
+  // const {address,getTokens}=useStateContext();
+     const handleConnect=async()=> {
+      try {
+        const wallet = await connect(
+          walletconfig, // pass the wallet config object
+           // pass options required by the wallet (if any)
+        );
+   
+        console.log("connected to", wallet);
+       
+      } catch (e) {
+        console.error("failed to connect", e);
+      }
+    }
+  

@@ -1,29 +1,24 @@
 import React, { useState,useContext } from "react";
 import { Link, useLocation, useParams } from "react-router-dom";
 import { useEffect } from "react";
-import { Navbar } from "../navbar/Navbar";
+
 import AuthUser from "../shared/Authuser";
 
 const Cart=()=>{
 const {userData}=useContext(AuthUser);
-  // const location = useLocation();
-  // const { user } = location.state || {}; // Retrieve 'user' from location.state
-const [array,setArray]=useState([]);
+ const [array,setArray]=useState([]);
 
    useEffect(
     ()=>{
+     
 fetchdata();
     },[]);
     const fetchdata=async()=>{
         console.log({userData});
-const response =await fetch('http://localhost:3000/getthecart',{
-  method:"POST",
-  headers:{
-    'Content-Type':'application/json'
-  },
-  body:JSON.stringify({
-    "name":userData
-  })
+const response =await fetch('/server/api/cart/getthecart',{
+  method: 'GET',
+  credentials:"include",
+ 
 });
 const data=await response.json();
 console.log(data);
@@ -39,8 +34,9 @@ setArray(data);
 
     }
 const deletetheproduct=async(id)=>{
-const response=await fetch("http://localhost:3000/deletetheuserproduct",{
+const response=await fetch("/server/api/cart/deletetheuserproduct",{
   method:"POST",
+  credentials:"include",
   headers:{
     'Content-Type':'application/json'
   },

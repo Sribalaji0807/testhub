@@ -1,11 +1,22 @@
 import React from 'react'
 import { useEffect } from 'react'
+import { useNavigate } from 'react-router-dom';
 import { useState,useContext } from 'react'
+import coin from '../assets/coins-solid.svg'
+import add from '../assets/add.png'
 import { Link,useLocation } from 'react-router-dom'
-import AuthUser from '../shared/Authuser'
+import { useStateContext } from '../Context/index1'
+import { useSelector } from 'react-redux';
 export const Navbar = () => {
-    const {userData,clearUserData}=useContext(AuthUser)
-    
+ 
+  const navigate=useNavigate();
+   const {name} =useSelector((state)=>state.User)
+   useEffect(() => {
+     console.log(name);
+   },[name])
+   const [user, setUser] = useState(null);
+
+    const {walletAddress,connectWallet,sendTransaction,balance}=useStateContext();
     const location = useLocation();
  //   const user1=useContext(AuthUser)
     const [menuOpen, setMenuOpen] = useState(false);
@@ -15,14 +26,17 @@ export const Navbar = () => {
     };
   
     const closeMenu = async() => {
-      const response=await fetch('http://localhost:3000/logout',{
-method:'POST',
+      console.log("started");
+      const response=await fetch('/server/api/auth/logout',{
         credentials:'include'})
      if(response.ok){ 
      clearUserData();
     //  setUser(null);
-      setMenuOpen(false);}
+      setMenuOpen(false);
+    navigate('/')
+    }
     };
+ 
   return (
     <>
     <header class="text-gray-600 body-font">
@@ -33,15 +47,15 @@ method:'POST',
         </svg>
         <span class="ml-3 text-xl">Ecommerce</span>
       </a>
-      <nav class="md:ml-auto flex flex-wrap items-center text-base justify-center">
+      <nav class="md:ml-auto flex flex-wrap items-center text-base gap-2 justify-center md:mr-auto lg:mr-0 ">
         <a class="mr-5 hover:text-gray-900"><Link to="/">Home</Link></a>
         <a class="mr-5 hover:text-gray-900">All products</a>
         <a class="mr-5 hover:text-gray-900">Categories</a>
         <a class="mr-5 hover:text-gray-900"><Link to='/myorders'>My Orders</Link></a>
-    <a class="mr-5 hover:text-gray-900"> <Link to='Cart'>Cart</Link>
+    <a class="mr-5 hover:text-gray-900"> <Link to='Cart'  >Cart</Link>
     </a>
         
-        {userData == null ? (
+        {name == null ? (
     <button className="inline-flex text-white bg-indigo-500 border-0 py-1 px-4 focus:outline-none hover:bg-indigo-600 rounded text-lg">
       <Link to="/login">Login</Link>
     </button>
@@ -53,7 +67,7 @@ method:'POST',
           onClick={toggleMenu}
           className="border-e px-4 py-2 text-sm/none text-gray-600 hover:bg-gray-50 hover:text-gray-700"
         >
-          {userData}
+          {name}
         </a>
       
       </div>
@@ -63,20 +77,44 @@ method:'POST',
           role="menu"
         >
           <div className="p-2">
-            <a
+            <Link to={'/Dashboard?tab=profile'} onClick={toggleMenu} className='block rounded-lg px-4 py-2 text-sm text-gray-500 hover:bg-gray-50 hover:text-gray-700'>
+            Profile
+            </Link>
+            <button
               href="#"
               className="block rounded-lg px-4 py-2 text-sm text-gray-500 hover:bg-gray-50 hover:text-gray-700"
               role="menuitem"
-              onClick={closeMenu}
+              onClick={()=>{closeMenu()}}
             >
               Logout
-            </a>
+            </button>
           </div>
         </div>
       )}
     </div>
   
     )}
+    {walletAddress ==null ?(
+    <button className="inline-flex text-white bg-indigo-500 border-0 py-1 px-4 focus:outline-none hover:bg-indigo-600 rounded text-lg "
+    onClick={connectWallet}
+    >
+      connect
+    </button>
+
+    ):(
+      <div className=' flex flex-row justify-center gap-2'>
+        <p className='w-[40px] text-xl overflow-hidden'>{walletAddress}...</p>
+        <div className='flex items-center gap-2'>
+          <button onClick={sendTransaction}>
+
+        <img className='w-[20px] h-[20px]' src={add} alt="" />
+
+          </button>
+          <p>{balance}</p>
+          <img className='w-[20px] h-[20px]' src={coin} alt="" />
+        </div>
+      </div>
+    ) }
       </nav>
      
      </div>

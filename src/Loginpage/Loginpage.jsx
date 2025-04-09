@@ -1,34 +1,37 @@
 import React from "react";
 import { useState,useContext } from "react";
 import { useNavigate } from "react-router-dom"
-import AuthUser from "../shared/Authuser";
-
+import { useDispatch } from "react-redux";
+import api from "../shared/api";
+import { setUser } from "../shared/UserDataSlice";
 const Loginpage = () => {
   const navigate = useNavigate();
   const [emailid, setEmailid] = useState('');
   const [passwd, setPasswd] = useState('');
-const {updateUserData}=useContext(AuthUser)
+const dispatch=useDispatch();
   const login = async function () {
     const senddata = {
       email: emailid,
       password: passwd
     }
     console.log(senddata);
-    const response = await fetch('http://localhost:3000/login', {
-      method: "POST",
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify(senddata)
-    })
-  if(response.ok){
-    const data = await response.json();
-    const name = data.name;
-    updateUserData(name);
-  // console.log(name);
-  //   localStorage.setItem("user", name);
+    const {data} = await api.post('/api/auth/login', senddata);  
+      // const response = await fetch('server/api/auth/login', {
+    //   method: "POST",
+    //   headers: {
+    //     'Content-Type': 'application/json'
+    //   },
+    //   body: JSON.stringify(senddata)
+    // })
+  
+  
+   console.log(data)
+
+   
+ await dispatch(setUser({name:data.Name,email:data.Emailid,Admin:data.Admin}));
+
    navigate('/');
-  }
+  
   }
 
   return (
