@@ -1,0 +1,99 @@
+app.post('/addtocart' ,async function(req,res){
+    let data=req.body;
+    console.log(data.id);
+  //  const productId = new ObjectId(data.index);
+
+   const update=await Customer.findOneAndUpdate({
+        Name:data.Name,
+    },{
+        $push:{Cart:data.id}
+    },
+    {new:true})
+    res.status(200);
+})
+app.post('/getthecart',async function(req,res){
+let user=req.body;
+console.log("------");
+  console.log(user['name']);
+
+  const get = await Customer.findOne({ Name: user['name'] });
+  let cartdetails = get.Cart;
+console.log(cartdetails);
+  if (!cartdetails || cartdetails.length === 0) {
+    console.log('Cart is empty');
+    return;
+  }
+
+  const products = await Product.find({"_id":{$in:cartdetails}});
+  console.log(products)
+
+  // if (!products) {
+  //   console.log('No products found');
+  //   return;
+  // }
+
+  // console.log(products[0].Productname[cartdetails]);
+  // for(var i=0;i<cartdetails.length;i++){
+  //   temp.Productname.push(products[0].Productname[cartdetails[i]]);
+  //   temp.images.push(products[0].images[cartdetails[i]]);
+
+  // }
+  // console.log(temp);
+  res.status(200).send(products);
+})
+app.post('/login',async function(req,res){
+let data=req.body;
+data["returnSecureToken"]=true;
+console.log(process.env.api_key);
+
+   const response=await fetch(`https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=${process.env.api_key}`,{
+        method:"POST",
+        headers:{
+            'Content-Type':'application/json'
+        },
+        body:JSON.stringify(data),
+})
+if(response.ok){
+var name=await print(data["email"]);
+var data1={
+    "name":name,
+}
+const token=jwt.sign(data1,process.env.JWT_SECRET_KEY);
+res.cookie('jwt',token,{httpOnly:true,secure:true,maxAge:36000})
+
+res.status(200).send(data1)
+}
+
+data=null;
+})
+app.use((req,res,next)=>{
+    const token=req.cookies.jwt;
+    if(token){
+        jwt.verify(token,process.env.JWT_SECRET_KEY,async function(err,decoded){
+            if(err){
+                res.locals.user=null;
+                next();
+            }
+            else{
+                res.locals.user=decoded;
+                next();
+            }
+        })
+    }
+    else{
+        res.locals.user=null;
+        next();
+    }
+})
+app.get('/productnames', async function(req,res){
+    try {
+        const products = await Product.find({});
+
+        res.send(products);
+      } catch (err) {
+        console.error(err);
+        res.status(500).send('Error fetching products');
+      }
+          //console.log(productlist.find())
+//res.json(productlist.find())
+})

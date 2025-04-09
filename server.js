@@ -1,174 +1,53 @@
 const express=require('express');
 const cors =require('cors');
-const { ObjectId } = require('mongoose').Types;
-const Product=require('./product')
-const mongoose=require('mongoose');
+const cookieParser = require('cookie-parser');
+const dotenv=require('dotenv')
+dotenv.config();
+const path=require('path')
+const multer= require('multer')
+const fileUpload=require('./Imagekit')
+const adminController=require('./adminController');
+const AdminRoutes=require('./Routes/Admin.routes')
+const Customer=require('./Schema/Customer.schema')
+const Product=require('./Schema/product')
+const AuthRoutes=require('./Routes/Auth.routes')
+const ProductRoutes=require('./Routes/Product.routes')
+const CartRoutes=require('./Routes/Cart.routes')
+const UserRoutes=require('./Routes/User.routes');
+const { tokenverify } = require('./Controller/JwtToken.controller');
 const app=express();
-const url = 'mongodb://localhost:27017/productdetails';
 
-mongoose.connect(url,{
-    useNewUrlParser:true,
-    useUnifiedTopology:true
-})
-.then(()=>{console.log("success")});
-const customer =new mongoose.Schema({
-    Emailid:String,
-    Name:String,
-    Cart:Array,
-    Orders:Array
-});
-const Customer=mongoose.model('Customer',customer,'Customer');
 async function print(a){
     var data1=await Customer.findOne({"Emailid":a});
     console.log(data1.Name);
      return data1["Name"];
 }
 
-//print();
-//console.log('success');
-// async function cart() {
-//     try {
-//       let user = 'Sribalaji';
-//       var temp={
-//         Productname:[],
-//         images:[]
-//       };
-//       const get = await Customer.findOne({ Name: user });
-//       let cartdetails = get.Cart;
+// const storage = multer.diskStorage({
+//     destination: (req, file, cb) => {
+//       cb(null, './upload/');
+//     },
+//     filename: (req, file, cb) => {
+//         const customFileName = req.body.fileName || Date.now() + path.extname(file.originalname);
+//         cb(null, customFileName);
+//       },
+//   });
   
-//       if (!cartdetails || cartdetails.length === 0) {
-//         console.log('Cart is empty');
-//         return;
-//       }
-  
-//       const products = await Product.find({});
-  
-//       if (!products) {
-//         console.log('No products found');
-//         return;
-//       }
-  
-//       console.log(products[0].Productname[cartdetails]);
-//       for(var i=0;i<cartdetails.length;i++){
-//         temp.Productname.push(products[0].Productname[cartdetails[i]]);
-//         temp.images.push(products[0].images[cartdetails[i]]);
+//  const upload = multer({ storage: storage });
 
-//       }
-//       console.log(temp);
-//     } catch (error) {
-//       console.error('Error in cart function:', error);
-//     }
-//   }
-// // Invoke cart asynchronously
-// cart().then(() => {
-//     console.log('Cart operation completed.');
-// }).catch(error => {
-//     console.error('Error invoking cart:', error);
-// });
-
-console.log(process.env.api_key);
-
-app.use(cors());
+const storage=multer.memoryStorage();
+const upload=multer({storage:storage});
+app.use(cors({
+    origin:'http://localhost:5173',
+    credentials:true
+}));
+app.use(cookieParser());
 app.use(express.json());
-
-
-app.post('/login',async function(req,res){
-let data=req.body;
-data["returnSecureToken"]=true;
-console.log(process.env.api_key);
-
-   const response=await fetch(`https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=${process.env.api_key}`,{
-        method:"POST",
-        headers:{
-            'Content-Type':'application/json'
-        },
-        body:JSON.stringify(data),
-   })
-if(response.ok){
-    //console.log(response);
-    console.log(data["email"]);
-var name=await print(data["email"]);
-var data1={
-    "name":name,
-}
-console.log(data1);
-res.status(200).send(data1)
-}
-
-data=null;
-})
-
-app.get('/productnames', async function(req,res){
-    try {
-        const products = await Product.find({});
-
-        res.send(products);
-      } catch (err) {
-        console.error(err);
-        res.status(500).send('Error fetching products');
-      }
-          //console.log(productlist.find())
-//res.json(productlist.find())
-})
-app.post('/deletetheuserproduct',async(req,res)=>{
-    let data=req.body;
-    console.log(data.id);
-
-   const update=await Customer.findOneAndUpdate({
-        Name:data.Name,
-    },{
-        $pull:{Cart:data.id}
-    },
-    {new:true})
-    res.status(200).send("success");
-
-})
-
-app.post('/addtocart' ,async function(req,res){
-    let data=req.body;
-    console.log(data.id);
-  //  const productId = new ObjectId(data.index);
-
-   const update=await Customer.findOneAndUpdate({
-        Name:data.Name,
-    },{
-        $push:{Cart:data.id}
-    },
-    {new:true})
-    res.status(200);
-})
-
-app.post('/getthecart',async function(req,res){
-let user=req.body;
-console.log("------");
-  console.log(user['name']);
-
-  const get = await Customer.findOne({ Name: user['name'] });
-  let cartdetails = get.Cart;
-console.log(cartdetails);
-  if (!cartdetails || cartdetails.length === 0) {
-    console.log('Cart is empty');
-    return;
-  }
-
-  const products = await Product.find({"_id":{$in:cartdetails}});
-  console.log(products)
-
-  // if (!products) {
-  //   console.log('No products found');
-  //   return;
-  // }
-
-  // console.log(products[0].Productname[cartdetails]);
-  // for(var i=0;i<cartdetails.length;i++){
-  //   temp.Productname.push(products[0].Productname[cartdetails[i]]);
-  //   temp.images.push(products[0].images[cartdetails[i]]);
-
-  // }
-  // console.log(temp);
-  res.status(200).send(products);
-})
-
+app.use('/api/admin',AdminRoutes);
+app.use('/api/auth',AuthRoutes)
+app.use('/api/cart',CartRoutes);
+app.use('/api/products',ProductRoutes)
+app.use('/api/user',tokenverify,UserRoutes)
 app.get('/getbuyproduct/:id',async(req,res)=>{
     let id=req.params.id;
     console.log(id);
@@ -203,6 +82,26 @@ app.post('/getmyorder',async(req,res)=>{
     const products = await Product.find({"_id":{$in:update}});
 
     res.json(products);
+})
+
+app.post('/upload', upload.single('file'), async(req, res) => {
+
+    if (!req.file) {
+        return res.status(400).send('No file uploaded.');
+      }
+      const fileName = req.body.fileName || req.file.filename;
+        console.log(`Uploaded file name: ${fileName}`);
+    console.log(req.file.filename);
+const fileurl=await fileUpload(req.body.fileName);
+console.log(fileurl)
+const product= new Product({
+    ProductName:req.body.name,
+    images:fileurl,
+    price:req.body.price
+}) 
+product.save();
+
+res.status(200).json({message:"success"})
 })
 
 app.listen(3000)
