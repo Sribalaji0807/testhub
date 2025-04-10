@@ -1,9 +1,8 @@
 import React, { useCallback } from "react";
-import { Await, Link } from "react-router-dom";
 import { useState } from "react";
 import { useEffect } from "react";
 import { useLocation } from "react-router-dom";
-import mac from "D:/projects/git repo/testhub/src/assets/mac.webp"
+import mac from "../assets/mac.webp"
 import BuyingComponent from "../BuyingPage/BuyingComponent";
 import ProductCard from "../AllProducts/ProductCard";
 
@@ -85,27 +84,39 @@ setSubCategory(data.subCategory);
     </div>
   </div>
 </section>
+<search className="w-full flex justify-center">
+<div class="relative  ">
+  <input
+    placeholder="Search..."
+    class="input shadow-lg focus:border-2 border-r-0 border-gray-300 px-5 py-3 rounded-xl w-84 transition-all focus:w-96 outline-none"
+    name="search"
+    type="search"
+  />
+  <svg
+    class="size-6 absolute top-3 right-3 text-gray-500"
+    stroke="currentColor"
+    stroke-width="1.5"
+    viewBox="0 0 24 24"
+    fill="none"
+    xmlns="http://www.w3.org/2000/svg"
+  >
+    <path
+      d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z"
+      stroke-linejoin="round"
+      stroke-linecap="round"
+    ></path>
+  </svg>
+</div>
+
+</search>
 <section class="text-gray-600 body-font">
   <div class="container px-5 py-24 mx-auto">
-  <div className="flex flex-wrap -m-4">
-  {array.map((product, index) => (
-    <div className="lg:w-1/4 md:w-1/2 p-4 w-full" key={index}>
-      <a className="block relative h-48 rounded overflow-hidden">
-        <img alt="ecommerce" className="object-cover object-center w-full h-full block" src={product.images} />
-      </a>
-      <h2 className="text-gray-900 title-font text-lg font-medium">{product.ProductName}</h2>
-      <p className="mt-1">$21.15</p>
-      <button class="mt-2 inline-flex text-gray-700 bg-gray-100 border-0 py-2 px-6 focus:outline-none hover:bg-gray-200 rounded text-lg"onClick={()=>{setcart(product._id)}}>Add to cart</button>
-      <button class="mt-2 ml-8 inline-flex text-gray-700 bg-gray-100 border-0 py-2 px-6 focus:outline-none hover:bg-gray-200 rounded text-lg"><Link to={`/Buy/${product._id}`}>Buy</Link></button>
-
-    </div>
-  ))}
-</div>     
+    
 {mainCategory != null &&
   Object.keys(mainCategory).map((category, index) => (
     <div key={index} className="p-4">
       <h2 className="text-black-900 title-font text-lg font-medium mb-2">{category}</h2>
-      <div className="flex flex-wrap -m-4">
+      <div className=" flex gap-2  sm:flex-wrap ">
       {mainCategory[category].map((subcategory, subindex) => (
         <ProductCard subcategory={subcategory} subindex={subindex} setcart={setcart} />
       ))}
