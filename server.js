@@ -48,41 +48,6 @@ app.use('/api/auth',AuthRoutes)
 app.use('/api/cart',CartRoutes);
 app.use('/api/products',ProductRoutes)
 app.use('/api/user',tokenverify,UserRoutes)
-app.get('/getbuyproduct/:id',async(req,res)=>{
-    let id=req.params.id;
-    console.log(id);
-    const result=await Product.find({
-        _id:id
-    })
-    console.log(result);
-    res.json(result);
-})
-app.post('/order',async(req,res)=>{
-    let data=req.body;
-    console.log(data.id);
-  //  const productId = new ObjectId(data.index);
-
-   const update=await Customer.findOneAndUpdate({
-        Name:data.Name,
-    },{
-        $push:{Orders:data.id}
-    },
-    {new:true})
-    res.status(200);
-})
-app.post('/getmyorder',async(req,res)=>{
-    let data=req.body;
-   const user=await Customer.find({
-        Name:data.Name,
-    })
-    console.log(user);
-
-    const update=user[0].Orders;
-
-    const products = await Product.find({"_id":{$in:update}});
-
-    res.json(products);
-})
 
 app.post('/upload', upload.single('file'), async(req, res) => {
 
