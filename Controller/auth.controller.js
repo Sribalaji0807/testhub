@@ -2,33 +2,33 @@ const auth =require('../config/firebase.config');
 const {createUserWithEmailAndPassword,signInWithEmailAndPassword}=require('firebase/auth');
 const customer=require('../Schema/Customer.schema')
 const {tokenGenerator}=require('./JwtToken.controller');
-function CreateUser(Name,email,password){
+async function CreateUser(Name, email, password) {
+    try {
+        const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+        const user = userCredential.user;
 
-    const response=createUserWithEmailAndPassword(auth,email,password)
-    .then(async(userCredential)=>{
-        const user=userCredential.user;
-        console.log(user);
-        try {
-            const data = new customer({
-                Emailid: email,
-                Name: Name,
-                Cart: [],
-                Orders: []
-            });
+        const data = new customer({
+            Emailid: email,
+            Name: Name,
+            Cart: [],
+            Orders: []
+        });
+
+        const response=await data.save(); // Save the data
+        console.log(response);
         
-            const savedData = await data.save(); // Save the data
-          
-        } catch (err) {
-            console.error("Error saving user:", err); // Handle errors
-        }
-    })
-    .catch((error)=>{
-        const errorCode=error.code;
-        const errorMessage=error.message;
-        console.log(errorCode,errorMessage);
-    })
+        const token= await tokenGenerator({id:response._id});
+ const { _id, ...userData } =  response.toObject();
+ console.log("userData",userData);
 
+        return { token, response: userData };
+        
+    } catch (err) {
+        console.error("Error:", err.message);
+        return null;
+    }
 }
+
 async function login(email,password){
     try {
         const userCredential=await signInWithEmailAndPassword(auth,email,password)

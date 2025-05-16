@@ -1,19 +1,27 @@
 const express=require('express');
-const {Createuser,login}=require('../Controller/auth.controller.js');
+const {CreateUser,login}=require('../Controller/auth.controller.js');
 const { tokenverify } = require('../Controller/JwtToken.controller.js');
 const router=express.Router();
 
 router.get('/logout',tokenverify,async(req,res)=>{
-    console.log("start");
-    res.cookie('jwt', '', { httpOnly: true, secure: true, maxAge: 120000 });
-    res.status(200).send('Logged out');
+    console.log("Logout initiated");
+
+  res.clearCookie('jwt', {
+    httpOnly: true,
+    secure: true,
+    sameSite: 'None',
+    path: '/',
+  });
+
+  res.status(200).send('Logged out');
 })
 
 router.post('/signup',async function(req,res){
     const data=req.body;
-    const create=await Createuser(data["email"],data["password"]);
-    if(create){
-        res.status(200).send("success");
+    const response= await CreateUser(data["name"],data["email"],data["password"]);
+    if(response!=null){
+        console.log(response);
+        res.cookie('jwt',response.token,{httpOnly:true,secure:false,sameSite: 'lax',maxAge:360000}).status(200).json(response.response);
     }
     else{
         res.status(400).send("failed");
