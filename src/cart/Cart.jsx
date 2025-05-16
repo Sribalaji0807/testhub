@@ -5,7 +5,7 @@ import { useEffect } from "react";
 import AuthUser from "../shared/Authuser";
 
 const Cart=()=>{
-const {userData}=useContext(AuthUser);
+//const {userData}=useContext(AuthUser);
  const [array,setArray]=useState([]);
 
    useEffect(
@@ -14,7 +14,6 @@ const {userData}=useContext(AuthUser);
 fetchdata();
     },[]);
     const fetchdata=async()=>{
-        console.log({userData});
 const response =await fetch('/server/api/cart/getthecart',{
   method: 'GET',
   credentials:"include",

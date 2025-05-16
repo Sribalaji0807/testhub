@@ -3,8 +3,9 @@ import './App.css'
 import Homepage from './Homepage/Homepage'
 import {BrowserRouter as Router,Routes,Route} from 'react-router-dom'
 import BuyingComponent from './BuyingPage/BuyingComponent'
-import Loginpage from './Loginpage/Loginpage'
+import Loginpage from './Authpage/Loginpage'
 import Cart from './cart/Cart'
+import Signup from './Authpage/Signup'
 import Orders from './Orders/Orders'
 import { Navbar } from './navbar/Navbar'
 import Dashboard from './Dashboard/Dashboard'
@@ -18,7 +19,7 @@ function App() {
       <Navbar/>
       <Routes>
         <Route path='/' element={<Homepage/>}/>
-
+<Route path='/signup' element={<Signup/>} />
       <Route path='/login' element={<Loginpage/>}/>
       <Route path='/Cart' element={<Cart/>}/>
       <Route path='/Buy/:id' element={<BuyingComponent/>}/>

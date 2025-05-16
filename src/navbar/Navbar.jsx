@@ -1,4 +1,3 @@
-import React from 'react'
 import { useEffect } from 'react'
 import { useNavigate } from 'react-router-dom';
 import { useState,useContext } from 'react'
@@ -7,6 +6,9 @@ import add from '../assets/add.png'
 import { Link,useLocation } from 'react-router-dom'
 import { useStateContext } from '../Context/index1'
 import { useSelector } from 'react-redux';
+import api from '../shared/api';
+import { useDispatch } from 'react-redux';
+import { resetUserData } from '../shared/UserDataSlice';
 export const Navbar = () => {
  
   const navigate=useNavigate();
@@ -17,8 +19,7 @@ export const Navbar = () => {
    const [user, setUser] = useState(null);
 
     const {walletAddress,connectWallet,sendTransaction,balance}=useStateContext();
-    const location = useLocation();
- //   const user1=useContext(AuthUser)
+  const dispatch=useDispatch();
     const [menuOpen, setMenuOpen] = useState(false);
    
     const toggleMenu = () => {
@@ -27,11 +28,13 @@ export const Navbar = () => {
   
     const closeMenu = async() => {
       console.log("started");
-      const response=await fetch('/server/api/auth/logout',{
-        credentials:'include'})
-     if(response.ok){ 
-     clearUserData();
-    //  setUser(null);
+      const response=await api.get('/api/auth/logout',{
+        withCredentials:true})
+     if(response.status===200){
+      
+     //clearUserData();
+      dispatch(resetUserData());
+      setUser(null);
       setMenuOpen(false);
     navigate('/')
     }
