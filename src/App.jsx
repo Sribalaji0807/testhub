@@ -11,6 +11,8 @@ import { Navbar } from './navbar/Navbar'
 import Dashboard from './Dashboard/Dashboard'
 import AddProduct  from './Dashboard/AddProduct'
 import AddCategory from './Dashboard/AddCategory'
+import IsAdmin from './IsAdmin';
+import { IsLogin } from './IsAdmin'
 function App() {
 
   return (
@@ -21,9 +23,11 @@ function App() {
         <Route path='/' element={<Homepage/>}/>
 <Route path='/signup' element={<Signup/>} />
       <Route path='/login' element={<Loginpage/>}/>
+      <Route element={<IsLogin/>}>
       <Route path='/Cart' element={<Cart/>}/>
-      <Route path='/Buy/:id' element={<BuyingComponent/>}/>
 <Route path='/myorders' element={<Orders/>} />
+      </Route>
+      <Route path='/Buy/:id' element={<BuyingComponent/>}/>
 <Route path='/Dashboard' element={<Dashboard/>} />  
 <Route element={<isAdmin/>}>
 <Route path='/Dashboard?tab=Product' element={<AddProduct/>} />

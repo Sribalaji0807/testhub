@@ -6,8 +6,8 @@ const Sidebar = () => {
     console.log(Admin);
   //  const [isAdmin,setIsAdmin]=useState(true);
     return (
-    <div className='md:w-1/4'>
-        <div className="md:w-[250px] md:h-[100vh]  bg-blue-500 text-white ">
+    <div className='md:w-1/4 h-full'>
+        <div className="md:w-[250px] md:h-full   bg-blue-500 text-white ">
             <ul className=" space-y-5 text-xl flex flex-row justify-center items-center md:flex-col">
                 <li className="w-full text-center mt-9 hover:border-b-2  hover:border-white hover:pb-2 relative bottom-2 md:bottom-0  text-2xs md:block "><Link to="/Dashboard?tab=profile" >Profile</Link></li>
                 <li className="w-full text-center mt-9 hover:border-b-2 hover:border-white hover:pb-2 text-2xs ">Cart</li>

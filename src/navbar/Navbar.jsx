@@ -54,9 +54,9 @@ export const Navbar = () => {
         <a class="mr-5 hover:text-gray-900"><Link to="/">Home</Link></a>
         <a class="mr-5 hover:text-gray-900">Categories</a>
         <a class="mr-5 hover:text-gray-900"><Link to='/myorders'>My Orders</Link></a>
-    <a class="mr-5 hover:text-gray-900"> <Link to='Cart'  >Cart</Link>
+    <a class="mr-5 hover:text-gray-900"> <Link to='/Cart'>Cart</Link>
     </a>
-        <a class="mr-5 hover:text-gray-900">Contact</a>
+        <a class="mr-5 hover:text-gray-900">Contact Us</a>
         
         {name == null ? (
     <button className="inline-flex text-white bg-indigo-500 border-0 py-1 px-4 focus:outline-none hover:bg-indigo-600 rounded text-lg">

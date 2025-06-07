@@ -51,8 +51,8 @@ formData.append('description',form.description);
 }
 
   return (
-  <div className='w-full    z-10 flex justify-center items-center absolute top-20 backdrop-blur-md left-10 shadow-md'>
-    <div className=' ml-20 border-2 border-gray-300 rounded-[6px] p-4 flex justify-center bg-white '>
+  <div className='w-full  flex justify-center items-center '>
+    <div className=' flex justify-center  '>
         <form action="" className='flex flex-col gap-3 justify-center text-gray-700'>
             <label for="name">Name</label>
             <input className='border-2 border-gray-300 rounded-[6px] ' type="text" id="name" name="name" value={form.name} onChange={

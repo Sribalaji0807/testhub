@@ -35,7 +35,9 @@ setSearchResult(response);
   }
   return (
     <div className='w-full h-full flex flex-wrap flex-col lg:mt-10 gap-2'>
-        <div className='w-full  flex justify-center items-center gap-12'>
+   {!showEdit && (
+    <>
+         <div className='w-full  flex justify-center items-center gap-12'>
           <button className='bg-blue-500 text-white px-4 py-2 rounded-[6px]' onClick={()=>setShowEdit(true)}>Add Product</button>
         <div className='flex justify-center items-center'>
           <div>
@@ -83,7 +85,8 @@ setSearchResult(response);
         ))}
         </tbody>
     </table>
-</div>
+</div></>
+   )}
 
 {showEdit && <EditProduct updateEdit={updateEdit}/>}
     </div>
