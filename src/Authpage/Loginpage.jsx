@@ -33,7 +33,7 @@ const dispatch=useDispatch();
     <>
     <div className="w-screen h-screen flex justify-center items-center relative bottom-10">
 <form className="w-1/2 h-1/2 lg:w-1/3  flex flex-col items-center justify-center bg-white p-8 shadow-lg relative overflow-hidden" onSubmit={(e)=>{e.preventDefault();login()}}>
-      <div className="absolute w-72 h-72 bg-purple-300 rounded-3xl transform rotate-45 -left-44 bottom-8 z-0 shadow-md"></div>
+      <div className="absolute w-72 h-72 bg-indigo-300  rounded-3xl transform rotate-45 -left-44 bottom-8 z-0 shadow-md"></div>
 
       <p className="text-3xl text-gray-800 font-bold mb-4 z-10">Login</p>
 
@@ -47,7 +47,7 @@ const dispatch=useDispatch();
           name="email"
           onChange={handleEdit}
           value={form.email}
-          className="w-full h-8 bg-transparent  border-b-2 border-gray-300 pl-8 py-1 text-sm focus:outline-none focus:border-purple-400"
+          className="w-full h-8 bg-transparent  border-b-2 placeholder-black border-gray-300 pl-8 py-1 text-sm focus:outline-none focus:border-indigo-400"
         />
       </div>
 
@@ -61,14 +61,14 @@ const dispatch=useDispatch();
           placeholder="Password"
           name="password"
           onChange={handleEdit}
-          className="w-full h-8 bg-transparent border-b-2 border-gray-300 pl-8 py-1 text-sm focus:outline-none focus:border-purple-400"
+          className="w-full h-8 bg-transparent placeholder-black border-b-2 border-gray-300 pl-8 py-1 text-sm focus:outline-none focus:border-purple-400"
         />
       </div>
 
-      <input type="submit"  className="w-full bg-purple-600 text-white py-2 text-sm font-medium hover:bg-purple-500 cursor-pointer z-10 mb-2"/>
+      <input type="submit"  className="w-full bg-indigo-600  text-white py-2 text-sm font-medium hover:bg-purple-500 cursor-pointer z-10 mb-2"/>
 <div className='flex gap-2'>
-        <p className="text-1xl text-purple-800 z-10">Don't have an account  </p>
-        <Link to={'/signup'} className="text-1xl text-purple-800 z-10">Sign up</Link>
+        <p className="text-1xl text-indigo-800 z-10">Don't have an account ?</p>
+        <Link to={'/signup'} className="text-1xl text-indigo-800 z-10">Sign up</Link>
 </div>
     </form>
 

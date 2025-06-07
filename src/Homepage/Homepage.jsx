@@ -116,7 +116,7 @@ setSubCategory(data.subCategory);
   Object.keys(mainCategory).map((category, index) => (
     <div key={index} className="p-4">
       <h2 className="text-black-900 title-font text-lg font-medium mb-2">{category}</h2>
-      <div className=" flex gap-2  sm:flex-wrap ">
+      <div className=" flex gap-5  sm:flex-wrap ">
       {mainCategory[category].map((subcategory, subindex) => (
         <ProductCard subcategory={subcategory} subindex={subindex} setcart={setcart} />
       ))}
